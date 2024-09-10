@@ -1,0 +1,23 @@
+name: 'Setup ecsctl'
+description: 'Download the binary of the ecsctl, add execution permission and add it to Path'
+inputs:
+  version:
+    description: 'Version of the ecsctl'
+    default: 'latest'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download ecsctl
+      shell: bash
+      run: |
+        wget --no-verbose "https://github.com/gumieri/ecsctl/releases/${{ inputs.version }}/download/ecsctl-$(uname -s)-$(uname -m)"
+        mv "ecsctl-$(uname -s)-$(uname -m)" ./ecsctl
+        chmod +x ./ecsctl
+
+    - name: Install ecsctl
+      shell: bash
+      run: |
+        mkdir -p "$HOME/.local/bin/"
+        mv ./ecsctl "$HOME/.local/bin/ecsctl"
+        echo "$HOME/.local/bin/" >> $GITHUB_PATH
